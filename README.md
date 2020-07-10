@@ -4,3 +4,4 @@
     and install SonarLint for SonarQube.
 *   Library for Guzzle : `php composer.phar require guzzlehttp/guzzle`.
 *   Library for .env : `php composer.phar require vlucas/phpdotenv`.
+*   Library for Validation : `php composer.phar require rakit/validation`.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Oop;
+namespace Oop\CustomException;
 
 class FileNotExistsException extends BaseException
 {

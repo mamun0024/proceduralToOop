@@ -16,6 +16,7 @@ $app = new CalculateCommission([
     'settings' => [
         'file_name' => $_ENV['INPUT_FILE_NAME'],
         'bin_check_url' => $_ENV['BIN_URL'],
-        'rate_url' => $_ENV['RATE_URL']
+        'rate_url' => $_ENV['RATE_URL'],
+        'currency' => $_ENV['CURRENCY']
     ]
 ]);
