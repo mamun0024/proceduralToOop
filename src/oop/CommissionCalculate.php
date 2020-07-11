@@ -10,6 +10,7 @@ use Oop\Exceptions\RateUrlDataFormatException;
 use Oop\Traits\HelperTrait;
 use Oop\Traits\ResponseTrait;
 use Oop\Requests\CalculateCommissionRequest;
+use Oop\Utils\EuCountryCodeList;
 
 class CommissionCalculate extends CommissionFile
 {
@@ -125,38 +126,13 @@ class CommissionCalculate extends CommissionFile
      */
     public function isEuropeUnion($country_code)
     {
-        switch ($country_code) {
-            case 'AT':
-            case 'BE':
-            case 'BG':
-            case 'CY':
-            case 'CZ':
-            case 'DE':
-            case 'DK':
-            case 'EE':
-            case 'ES':
-            case 'FI':
-            case 'FR':
-            case 'GR':
-            case 'HR':
-            case 'HU':
-            case 'IE':
-            case 'IT':
-            case 'LT':
-            case 'LU':
-            case 'LV':
-            case 'MT':
-            case 'NL':
-            case 'PO':
-            case 'PT':
-            case 'RO':
-            case 'SE':
-            case 'SI':
-            case 'SK':
-                return true;
-            default:
-                return false;
+        $list = new EuCountryCodeList();
+        if (in_array($country_code, $list->list())) {
+            $status = true;
+        } else {
+            $status = false;
         }
+        return $status;
     }
 
     /**
