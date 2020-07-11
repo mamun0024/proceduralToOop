@@ -282,7 +282,7 @@ class CommissionCalculate extends CommissionFile
      * Run this app.
      *
      * @param array $inputs
-     * @return void
+     * @return mixed
      */
     public function calculate($inputs)
     {
@@ -292,23 +292,24 @@ class CommissionCalculate extends CommissionFile
                 $this->setAllData($inputs);
                 if ($this->checkFileExistence()) {
                     $data = $this->calculateData($this->readFile());
-                    $this->response(200, "Data successfully fetched.", $data);
+                    $response = $this->response(200, "Data successfully fetched.", $data);
                 }
             } else {
-                $this->response(422, "Request param validation error.", $validator->validateInputError());
+                $response = $this->response(422, "Request param validation error.", $validator->validateInputError());
             }
         } catch (FileNotExistsException $e) {
-            $this->response(500, $e->errorMessage());
+            $response = $this->response(500, $e->errorMessage());
         } catch (FileDataFormatException $e) {
-            $this->response(500, $e->errorMessage());
+            $response = $this->response(500, $e->errorMessage());
         } catch (GuzzleException $e) {
-            $this->response(500, "Exception : " . $e->getMessage());
+            $response = $this->response(500, "Exception : " . $e->getMessage());
         } catch (RateUrlDataFormatException $e) {
-            $this->response(500, $e->errorMessage());
+            $response = $this->response(500, $e->errorMessage());
         } catch (BinCheckUrlDataFormatException $e) {
-            $this->response(500, $e->errorMessage());
+            $response = $this->response(500, $e->errorMessage());
         } catch (\Exception $e) {
-            $this->response(500, "Exception : " . $e->getMessage());
+            $response = $this->response(500, "Exception : " . $e->getMessage());
         }
+        return $response;
     }
 }

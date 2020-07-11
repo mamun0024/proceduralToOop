@@ -18,45 +18,45 @@ class CommissionFileTest extends TestCase
 {
     use HelperTrait;
 
-    private $commission_file;
+    private $comm_file;
 
     protected function setUp(): void
     {
-        $this->commission_file = new CommissionFile();
+        $this->comm_file = new CommissionFile();
     }
 
     public function testGetFilePath()
     {
-        $this->commission_file->setFilePath('');
-        $this->assertNull($this->commission_file->getFilePath());
-        $this->commission_file->setFilePath(null);
-        $this->assertNull($this->commission_file->getFilePath());
+        $this->comm_file->setFilePath('');
+        $this->assertNull($this->comm_file->getFilePath());
+        $this->comm_file->setFilePath(null);
+        $this->assertNull($this->comm_file->getFilePath());
 
-        $this->commission_file->setFilePath('files');
-        $this->assertEquals("files/", $this->commission_file->getFilePath());
-        $this->commission_file->setFilePath('files/');
-        $this->assertEquals("files/", $this->commission_file->getFilePath());
-        $this->commission_file->setFilePath('/files');
-        $this->assertEquals("files/", $this->commission_file->getFilePath());
-        $this->commission_file->setFilePath('/files/');
-        $this->assertEquals("files/", $this->commission_file->getFilePath());
+        $this->comm_file->setFilePath('files');
+        $this->assertEquals("files/", $this->comm_file->getFilePath());
+        $this->comm_file->setFilePath('files/');
+        $this->assertEquals("files/", $this->comm_file->getFilePath());
+        $this->comm_file->setFilePath('/files');
+        $this->assertEquals("files/", $this->comm_file->getFilePath());
+        $this->comm_file->setFilePath('/files/');
+        $this->assertEquals("files/", $this->comm_file->getFilePath());
 
-        $this->commission_file->setFilePath('files/test');
-        $this->assertEquals("files/test/", $this->commission_file->getFilePath());
-        $this->commission_file->setFilePath('files/test/');
-        $this->assertEquals("files/test/", $this->commission_file->getFilePath());
-        $this->commission_file->setFilePath('/files/test');
-        $this->assertEquals("files/test/", $this->commission_file->getFilePath());
-        $this->commission_file->setFilePath('/files/test/');
-        $this->assertEquals("files/test/", $this->commission_file->getFilePath());
+        $this->comm_file->setFilePath('files/test');
+        $this->assertEquals("files/test/", $this->comm_file->getFilePath());
+        $this->comm_file->setFilePath('files/test/');
+        $this->assertEquals("files/test/", $this->comm_file->getFilePath());
+        $this->comm_file->setFilePath('/files/test');
+        $this->assertEquals("files/test/", $this->comm_file->getFilePath());
+        $this->comm_file->setFilePath('/files/test/');
+        $this->assertEquals("files/test/", $this->comm_file->getFilePath());
     }
 
     public function testFileExistenceCheckReturnTrue()
     {
-        $this->commission_file->setFileName('input_test1.txt');
-        $this->commission_file->setFilePath('files/test/');
+        $this->comm_file->setFileName('input_test1.txt');
+        $this->comm_file->setFilePath('files/test/');
         try {
-            $this->assertTrue($this->commission_file->checkFileExistence());
+            $this->assertTrue($this->comm_file->checkFileExistence());
         } catch (FileNotExistsException $e) {
             echo $e->errorMessage();
         }
@@ -64,10 +64,10 @@ class CommissionFileTest extends TestCase
 
     public function testFileExistenceCheckThrowException()
     {
-        $this->commission_file->setFileName('input_test12.txt');
-        $this->commission_file->setFilePath('files/test/');
+        $this->comm_file->setFileName('input_test12.txt');
+        $this->comm_file->setFilePath('files/test/');
         try {
-            $this->commission_file->checkFileExistence();
+            $this->comm_file->checkFileExistence();
         } catch (FileNotExistsException $e) {
             $this->assertStringContainsString('Input file is not exists', $e->errorMessage());
         }
@@ -75,11 +75,11 @@ class CommissionFileTest extends TestCase
 
     public function testFileReadReturnDataArray()
     {
-        $this->commission_file->setFileName('input_test1.txt');
-        $this->commission_file->setFilePath('files/test/');
+        $this->comm_file->setFileName('input_test1.txt');
+        $this->comm_file->setFilePath('files/test/');
         try {
-            $this->commission_file->checkFileExistence();
-            $this->assertIsArray($this->commission_file->readFile());
+            $this->comm_file->checkFileExistence();
+            $this->assertIsArray($this->comm_file->readFile());
         } catch (FileDataFormatException $e) {
             echo $e->errorMessage();
         } catch (FileNotExistsException $e) {
@@ -89,11 +89,11 @@ class CommissionFileTest extends TestCase
 
     public function testFileReadThrowException()
     {
-        $this->commission_file->setFileName('input_test13.txt');
-        $this->commission_file->setFilePath('files/test/');
+        $this->comm_file->setFileName('input_test13.txt');
+        $this->comm_file->setFilePath('files/test/');
         try {
-            $this->commission_file->checkFileExistence();
-            $this->commission_file->readFile();
+            $this->comm_file->checkFileExistence();
+            $this->comm_file->readFile();
         } catch (FileDataFormatException $e) {
             $this->assertStringContainsString('File data format is not as expected', $e->errorMessage());
         } catch (FileNotExistsException $e) {

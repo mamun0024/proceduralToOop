@@ -14,7 +14,7 @@ class Application
     public function run()
     {
         $calculate_commission = new CommissionCalculate();
-        $calculate_commission->calculate([
+        $response = $calculate_commission->calculate([
             'file_name' => $this->settings['file_name'],
             'file_path' => $this->settings['file_path'],
             'bin_url'   => $this->settings['bin_check_url'],
@@ -23,5 +23,8 @@ class Application
             'eu_comm'   => $this->settings['eu_commission'],
             'ex_eu_comm' => $this->settings['ex_eu_commission']
         ]);
+        echo "<pre>";
+        print_r($response);
+        echo "</pre>";
     }
 }
