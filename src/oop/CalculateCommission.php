@@ -3,9 +3,9 @@
 namespace Oop;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Oop\CustomException\FileNotExistsException;
-use Oop\CustomException\BinCheckUrlDataFormatException;
-use Oop\CustomException\RateUrlDataFormatException;
+use Oop\Exceptions\FileNotExistsException;
+use Oop\Exceptions\BinCheckUrlDataFormatException;
+use Oop\Exceptions\RateUrlDataFormatException;
 use Oop\Traits\HelperTrait;
 use Oop\Traits\ResponseTrait;
 use SplFileObject;

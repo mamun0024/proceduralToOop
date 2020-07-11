@@ -1,6 +1,6 @@
 <?php
 
-namespace Oop\CustomException;
+namespace Oop\Exceptions;
 
 class RateUrlDataFormatException extends BaseException
 {
