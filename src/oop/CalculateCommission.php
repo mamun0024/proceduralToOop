@@ -186,9 +186,8 @@ class CalculateCommission
     private function calculateData($rowData)
     {
         try {
-            $country_code    = $this->callBinCheckUrl($rowData['bin']);
-            $is_europe_union = $this->isEuropeUnion($country_code);
-            $rate            = $this->callRateUrl($rowData['currency']);
+            $country_code = $this->callBinCheckUrl($rowData['bin']);
+            $rate         = $this->callRateUrl($rowData['currency']);
 
             if ($rowData['currency'] == "EUR") {
                 $amount = $rowData['amount'];
@@ -197,7 +196,7 @@ class CalculateCommission
             }
 
             $commission = $this->outputCurrency(
-                $amount * ($is_europe_union ? 0.01 : 0.02),
+                $amount * ($this->isEuropeUnion($country_code) ? 0.01 : 0.02),
                 "EUR",
                 $this->settings['currency']
             );
