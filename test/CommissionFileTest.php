@@ -27,6 +27,11 @@ class CommissionFileTest extends TestCase
 
     public function testGetFilePath()
     {
+        $this->commission_file->setFilePath('');
+        $this->assertNull($this->commission_file->getFilePath());
+        $this->commission_file->setFilePath(null);
+        $this->assertNull($this->commission_file->getFilePath());
+
         $this->commission_file->setFilePath('files');
         $this->assertEquals("files/", $this->commission_file->getFilePath());
         $this->commission_file->setFilePath('files/');
