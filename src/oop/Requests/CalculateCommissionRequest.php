@@ -18,7 +18,9 @@ class CalculateCommissionRequest extends Request
             'file_name' => 'required',
             'bin_url'   => 'required',
             'rate_url'  => 'required',
-            'currency'  => 'required'
+            'currency'  => 'required',
+            'eu_comm'   => 'required|numeric',
+            'ex_eu_comm' => 'required|numeric'
         ]);
 
         if ($validation->fails()) {

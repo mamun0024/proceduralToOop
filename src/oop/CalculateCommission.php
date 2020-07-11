@@ -21,12 +21,18 @@ class CalculateCommission
     private $rate_url;
     private $output_currency;
 
+    private $eu_commission;
+    private $except_eu_commission;
+
     public function setData($inputs)
     {
         $this->file_name       = $inputs['file_name'];
         $this->bin_url         = $inputs['bin_url'];
         $this->rate_url        = $inputs['rate_url'];
         $this->output_currency = $inputs['currency'];
+
+        $this->eu_commission        = $inputs['eu_comm'];
+        $this->except_eu_commission = $inputs['ex_eu_comm'];
     }
 
     /**
@@ -200,7 +206,7 @@ class CalculateCommission
         }
 
         $commission = $this->outputCurrency(
-            $amount * ($this->isEuropeUnion($country_code) ? 0.01 : 0.02),
+            $amount * ($this->isEuropeUnion($country_code) ? $this->eu_commission : $this->except_eu_commission),
             "EUR",
             $this->output_currency
         );
