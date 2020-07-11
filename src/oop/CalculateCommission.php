@@ -21,7 +21,7 @@ class CalculateCommission
     private $rate_url;
     private $output_currency;
 
-    private function setData($inputs)
+    public function setData($inputs)
     {
         $this->file_name       = $inputs['file_name'];
         $this->bin_url         = $inputs['bin_url'];
@@ -36,7 +36,7 @@ class CalculateCommission
      * @param string $country_code Country code.
      * @return boolean
      */
-    private function isEuropeUnion($country_code)
+    public function isEuropeUnion($country_code)
     {
         switch ($country_code) {
             case 'AT':
@@ -83,12 +83,12 @@ class CalculateCommission
      * @throws GuzzleException
      * @throws RateUrlDataFormatException
      */
-    private function outputCurrency($value, $from, $to)
+    public function outputCurrency($value, $from, $to)
     {
         if ($from === $to) {
             $amount = $value;
         } else {
-            $amount = $value * $this->callRateUrl($to);
+            $amount = $value * $this->getRate($to);
         }
         return $amount;
     }
@@ -102,9 +102,37 @@ class CalculateCommission
      *
      * @return float
      */
-    private function ceiling($value, $precision = 0)
+    public function ceiling($value, $precision = 0)
     {
         return ceil($value * pow(10, $precision)) / pow(10, $precision);
+    }
+
+    /**
+     * Call Bin Check URL.
+     *
+     * @param string $base_url
+     * @param string $endpoint
+     * @param array $data
+     * @param string $type
+     *
+     * @return array
+     * @throws GuzzleException
+     */
+    public function callExternalUrl($base_url, $endpoint, $data = [], $type = "GET")
+    {
+        $http_base_url = $base_url;
+        $http_endpoint = $endpoint;
+        $http_data     = $data;
+        $http_type     = $type;
+
+        // Call api.
+        $http_response  = $this->httpRequest(
+            $http_base_url,
+            $http_endpoint,
+            $http_data,
+            $http_type
+        );
+        return json_decode($http_response->getBody()->getContents(), true);
     }
 
     /**
@@ -116,24 +144,13 @@ class CalculateCommission
      * @throws GuzzleException
      * @throws BinCheckUrlDataFormatException
      */
-    private function callBinCheckUrl($bin)
+    public function getCountryCode($bin)
     {
-        $http_base_url = $this->bin_url;
-        $http_endpoint = $bin;
-        $http_data     = [];
-
-        // Call api.
-        $http_response  = $this->httpRequest(
-            $http_base_url,
-            $http_endpoint,
-            $http_data,
-        );
-        $http_response_data = json_decode($http_response->getBody()->getContents(), true);
-
-        if (!$this->emptyCheck($http_response_data['country']['alpha2'])) {
+        $response_data = $this->callExternalUrl($this->bin_url, $bin);
+        if (!$this->emptyCheck($response_data['country']['alpha2'])) {
             throw new BinCheckUrlDataFormatException();
         } else {
-            return $http_response_data['country']['alpha2'];
+            return $response_data['country']['alpha2'];
         }
     }
 
@@ -146,25 +163,14 @@ class CalculateCommission
      * @throws GuzzleException
      * @throws RateUrlDataFormatException
      */
-    private function callRateUrl($row_currency)
+    public function getRate($row_currency)
     {
-        $http_base_url = $this->rate_url;
-        $http_endpoint = $this->rate_url;
-        $http_data     = [];
-
-        // Call api.
-        $http_response  = $this->httpRequest(
-            $http_base_url,
-            $http_endpoint,
-            $http_data,
-        );
-        $http_response_data = @json_decode($http_response->getBody()->getContents(), true);
-
+        $response_data = $this->callExternalUrl($this->rate_url, $this->rate_url);
         if ($row_currency != "EUR") {
-            if (!$this->emptyCheck($http_response_data['rates'][$row_currency])) {
+            if (!$this->emptyCheck($response_data['rates'][$row_currency])) {
                 throw new RateUrlDataFormatException();
             }
-            $rate = $http_response_data['rates'][$row_currency];
+            $rate = $response_data['rates'][$row_currency];
         } else {
             $rate = 0;
         }
@@ -182,10 +188,10 @@ class CalculateCommission
      * @throws GuzzleException
      * @throws RateUrlDataFormatException
      */
-    private function calculateData($rowData)
+    public function calculateData($rowData)
     {
-        $country_code = $this->callBinCheckUrl($rowData['bin']);
-        $rate         = $this->callRateUrl($rowData['currency']);
+        $country_code = $this->getCountryCode($rowData['bin']);
+        $rate         = $this->getRate($rowData['currency']);
 
         if ($rate == 0) {
             $amount = $rowData['amount'];
@@ -214,7 +220,7 @@ class CalculateCommission
      * @throws GuzzleException
      * @throws RateUrlDataFormatException
      */
-    private function getDataFromFile()
+    public function getDataFromFile()
     {
         $data = [];
         if (!file_exists("././" . $this->file_name)) {
