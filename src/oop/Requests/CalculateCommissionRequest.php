@@ -15,10 +15,10 @@ class CalculateCommissionRequest extends Request
     public function validateInput($data)
     {
         $validation = $this->validate($data, [
-            'file_name'     => 'required',
-            'bin_check_url' => 'required',
-            'rate_url'      => 'required',
-            'currency'      => 'required'
+            'file_name' => 'required',
+            'bin_url'   => 'required',
+            'rate_url'  => 'required',
+            'currency'  => 'required'
         ]);
 
         if ($validation->fails()) {

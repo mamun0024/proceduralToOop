@@ -16,11 +16,17 @@ class CalculateCommission
     use ResponseTrait;
     use HelperTrait;
 
-    private $settings;
+    private $file_name;
+    private $bin_url;
+    private $rate_url;
+    private $output_currency;
 
-    public function __construct($settings = [])
+    private function setData($inputs)
     {
-        $this->settings = $settings['settings'];
+        $this->file_name       = $inputs['file_name'];
+        $this->bin_url         = $inputs['bin_url'];
+        $this->rate_url        = $inputs['rate_url'];
+        $this->output_currency = $inputs['currency'];
     }
 
     /**
@@ -112,7 +118,7 @@ class CalculateCommission
      */
     private function callBinCheckUrl($bin)
     {
-        $http_base_url = $this->settings['bin_check_url'];
+        $http_base_url = $this->bin_url;
         $http_endpoint = $bin;
         $http_data     = [];
 
@@ -142,8 +148,8 @@ class CalculateCommission
      */
     private function callRateUrl($row_currency)
     {
-        $http_base_url = $this->settings['rate_url'];
-        $http_endpoint = $this->settings['rate_url'];
+        $http_base_url = $this->rate_url;
+        $http_endpoint = $this->rate_url;
         $http_data     = [];
 
         // Call api.
@@ -190,7 +196,7 @@ class CalculateCommission
         $commission = $this->outputCurrency(
             $amount * ($this->isEuropeUnion($country_code) ? 0.01 : 0.02),
             "EUR",
-            $this->settings['currency']
+            $this->output_currency
         );
 
         $ceil_with_precision = $this->ceiling($commission, 2);
@@ -211,10 +217,10 @@ class CalculateCommission
     private function getDataFromFile()
     {
         $data = [];
-        if (!file_exists("././" . $this->settings['file_name'])) {
-            throw new FileNotExistsException($this->settings['file_name']);
+        if (!file_exists("././" . $this->file_name)) {
+            throw new FileNotExistsException();
         } else {
-            $file = new SplFileObject("././" . $this->settings['file_name']);
+            $file = new SplFileObject("././" . $this->file_name);
             while (!$file->eof()) {
                 $data[] = $this->calculateData(json_decode($file->fgets(), true));
             }
@@ -225,14 +231,17 @@ class CalculateCommission
     /**
      * Run this app.
      *
+     * @param array $inputs
      * @return void
      */
-    public function run()
+    public function calculate($inputs)
     {
         try {
             $validator = new CalculateCommissionRequest();
-            if ($validator->validateInput($this->settings)) {
+            if ($validator->validateInput($inputs)) {
+                $this->setData($inputs);
                 $data = $this->getDataFromFile();
+
                 $this->response(200, "Data successfully fetched.", $data);
             } else {
                 $this->response(422, "Request param validation error.", $validator->validateInputError());

@@ -7,12 +7,12 @@ spl_autoload_register(function ($class_name) {
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Oop\CalculateCommission;
+use Oop\Application;
 
 $dot_env = Dotenv\Dotenv::createMutable(__DIR__ . '/../');
 $dot_env->load();
 
-$app = new CalculateCommission([
+$app = new Application([
     'settings' => [
         'file_name' => $_ENV['INPUT_FILE_NAME'],
         'bin_check_url' => $_ENV['BIN_URL'],
