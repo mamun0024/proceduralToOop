@@ -13,6 +13,7 @@ class CommissionFile
 
     private $file;
     private $file_name;
+    private $file_path;
 
     /**
      * @return SplFileObject
@@ -47,6 +48,36 @@ class CommissionFile
     }
 
     /**
+     * @return string
+     */
+    public function getFilePath()
+    {
+        if ($this->emptyCheck($this->file_path)) {
+            $path = $this->file_path;
+            $f = substr($path, 0, 1);
+            $l = substr($path, -1);
+
+            if ($f == "/") {
+                $path = ltrim($path, '/');
+            }
+            if ($l != "/") {
+                $path .= "/";
+            }
+        } else {
+            $path = null;
+        }
+        return $path;
+    }
+
+    /**
+     * @param string $file_path
+     */
+    public function setFilePath($file_path): void
+    {
+        $this->file_path = $file_path;
+    }
+
+    /**
      * Read the input file and
      * check the existence.
      *
@@ -55,10 +86,10 @@ class CommissionFile
      */
     public function checkFileExistence()
     {
-        if (!file_exists("././" . $this->getFileName())) {
+        if (!file_exists("././" . $this->getFilePath() . $this->getFileName())) {
             throw new FileNotExistsException();
         } else {
-            $this->setFile(new SplFileObject("././" . $this->getFileName()));
+            $this->setFile(new SplFileObject("././" . $this->getFilePath() . $this->getFileName()));
             return true;
         }
     }

@@ -16,6 +16,7 @@ class Application
         $calculate_commission = new CommissionCalculate();
         $calculate_commission->calculate([
             'file_name' => $this->settings['file_name'],
+            'file_path' => $this->settings['file_path'],
             'bin_url'   => $this->settings['bin_check_url'],
             'rate_url'  => $this->settings['rate_url'],
             'currency'  => $this->settings['currency'],

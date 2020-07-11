@@ -110,6 +110,7 @@ class CommissionCalculate extends CommissionFile
     public function setAllData($inputs)
     {
         $this->setFileName($inputs['file_name']);
+        $this->setFilePath($inputs['file_path']);
         $this->setBinUrl($inputs['bin_url']);
         $this->setRateUrl($inputs['rate_url']);
         $this->setOutputCurrency($inputs['currency']);
