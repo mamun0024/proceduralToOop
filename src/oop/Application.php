@@ -13,7 +13,7 @@ class Application
 
     public function run()
     {
-        $calculate_commission = new CalculateCommission();
+        $calculate_commission = new CommissionCalculate();
         $calculate_commission->calculate([
             'file_name' => $this->settings['file_name'],
             'bin_url'   => $this->settings['bin_check_url'],
