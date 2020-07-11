@@ -73,28 +73,18 @@ class CalculateCommission
      * @param string $from
      * @param string $to
      *
-     * @return void|float
+     * @return float
+     * @throws GuzzleException
+     * @throws RateUrlDataFormatException
      */
     private function outputCurrency($value, $from, $to)
     {
-        try {
-            if ($from === $to) {
-                $amount = $value;
-            } else {
-                $amount = $value * $this->callRateUrl($to);
-            }
-            return $amount;
-        } catch (GuzzleException $e) {
-            $this->response(
-                500,
-                "Exception : " . $e->getMessage()
-            );
-        } catch (RateUrlDataFormatException $e) {
-            $this->response(
-                500,
-                $e->errorMessage()
-            );
+        if ($from === $to) {
+            $amount = $value;
+        } else {
+            $amount = $value * $this->callRateUrl($to);
         }
+        return $amount;
     }
 
     /**
@@ -181,45 +171,30 @@ class CalculateCommission
      *
      * @param array $rowData
      *
-     * @return void|float
+     * @return float
+     * @throws BinCheckUrlDataFormatException
+     * @throws GuzzleException
+     * @throws RateUrlDataFormatException
      */
     private function calculateData($rowData)
     {
-        try {
-            $country_code = $this->callBinCheckUrl($rowData['bin']);
-            $rate         = $this->callRateUrl($rowData['currency']);
+        $country_code = $this->callBinCheckUrl($rowData['bin']);
+        $rate         = $this->callRateUrl($rowData['currency']);
 
-            if ($rowData['currency'] == "EUR") {
-                $amount = $rowData['amount'];
-            } else {
-                $amount = $rowData['amount'] / $rate;
-            }
-
-            $commission = $this->outputCurrency(
-                $amount * ($this->isEuropeUnion($country_code) ? 0.01 : 0.02),
-                "EUR",
-                $this->settings['currency']
-            );
-
-            $ceil_with_precision = $this->ceiling($commission, 2);
-            return number_format($ceil_with_precision, 2, '.', '');
-
-        } catch (GuzzleException $e) {
-            $this->response(
-                500,
-                "Exception : " . $e->getMessage()
-            );
-        } catch (RateUrlDataFormatException $e) {
-            $this->response(
-                500,
-                $e->errorMessage()
-            );
-        } catch (BinCheckUrlDataFormatException $e) {
-            $this->response(
-                500,
-                $e->errorMessage()
-            );
+        if ($rate == 0) {
+            $amount = $rowData['amount'];
+        } else {
+            $amount = $rowData['amount'] / $rate;
         }
+
+        $commission = $this->outputCurrency(
+            $amount * ($this->isEuropeUnion($country_code) ? 0.01 : 0.02),
+            "EUR",
+            $this->settings['currency']
+        );
+
+        $ceil_with_precision = $this->ceiling($commission, 2);
+        return number_format($ceil_with_precision, 2, '.', '');
     }
 
     /**
@@ -228,7 +203,10 @@ class CalculateCommission
      * file.
      *
      * @return void|mixed
+     * @throws BinCheckUrlDataFormatException
      * @throws FileNotExistsException
+     * @throws GuzzleException
+     * @throws RateUrlDataFormatException
      */
     private function getDataFromFile()
     {
@@ -255,28 +233,20 @@ class CalculateCommission
             $validator = new CalculateCommissionRequest();
             if ($validator->validateInput($this->settings)) {
                 $data = $this->getDataFromFile();
-                $this->response(
-                    200,
-                    "Data successfully fetched.",
-                    $data
-                );
+                $this->response(200, "Data successfully fetched.", $data);
             } else {
-                $this->response(
-                    422,
-                    "Request param validation error.",
-                    $validator->validateInputError()
-                );
+                $this->response(422, "Request param validation error.", $validator->validateInputError());
             }
         } catch (FileNotExistsException $e) {
-            $this->response(
-                500,
-                $e->errorMessage()
-            );
+            $this->response(500, $e->errorMessage());
+        } catch (GuzzleException $e) {
+            $this->response(500, "Exception : " . $e->getMessage());
+        } catch (RateUrlDataFormatException $e) {
+            $this->response(500, $e->errorMessage());
+        } catch (BinCheckUrlDataFormatException $e) {
+            $this->response(500, $e->errorMessage());
         } catch (\Exception $e) {
-            $this->response(
-                500,
-                "Exception : " . $e->getMessage()
-            );
+            $this->response(500, "Exception : " . $e->getMessage());
         }
     }
 }
