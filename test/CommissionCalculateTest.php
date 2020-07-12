@@ -65,4 +65,21 @@ class CommissionCalculateTest extends TestCase
         $this->assertStringContainsString('Eu comm must be numeric', $response2);
         $this->assertStringContainsString('Ex eu comm must be numeric', $response2);
     }
+
+    public function testCalculateDataFunction()
+    {
+        $com_cal = $this->getMockBuilder(CommissionCalculate::class)
+            ->getMock();
+
+        $com_cal->expects($this->once())
+            ->method('calculateData')
+            ->will($this->returnValue([
+                "1.00",
+                "0.45",
+                "1.67",
+                "2.31",
+                "44.66"
+            ]));
+        $this->assertIsArray($com_cal->calculateData([]));
+    }
 }
