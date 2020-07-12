@@ -15,6 +15,7 @@ require_once __DIR__ . '/../src/oop/Utils/EuCountryCodeList.php';
 require_once __DIR__ . '/../src/oop/CommissionFile.php';
 require_once __DIR__ . '/../src/oop/CommissionCalculate.php';
 
+use GuzzleHttp\Exception\GuzzleException;
 use Oop\CommissionCalculate;
 use Oop\CommissionFile;
 use Oop\Exceptions\BinCheckUrlDataFormatException;
@@ -66,7 +67,7 @@ class CommissionCalculateTest extends TestCase
         $this->assertStringContainsString('Ex eu comm must be numeric', $response2);
     }
 
-    public function testCalculateDataReturnData()
+    public function testCalculateDataFunction()
     {
         $com_cal = $this->getMockBuilder(CommissionCalculate::class)
             ->setMethods(array('getCountryCode', 'getRate', 'outputCurrency'))
@@ -91,5 +92,78 @@ class CommissionCalculateTest extends TestCase
                 "currency" => "USD"
             ]
         ])[0]);
+    }
+
+    public function testGetRateFunction()
+    {
+        $com_cal = $this->getMockBuilder(CommissionCalculate::class)
+            ->setMethods(array('callExternalUrl'))
+            ->getMock();
+
+        $com_cal->expects($this->any())
+            ->method('callExternalUrl')
+            ->will($this->returnValue(['rates' => ['USD' => 1.1276]]));
+
+        $this->assertEquals(1.1276, $com_cal->getRate('USD'));
+        $this->assertEquals(0, $com_cal->getRate('EUR'));
+
+        try {
+            $com_cal->expects($this->any())
+                ->method('callExternalUrl')
+                ->willThrowException(new RateUrlDataFormatException());
+            $com_cal->getRate('USD');
+        } catch (RateUrlDataFormatException $e) {
+            $this->assertStringContainsString('Rate url response data format is not as expected.', $e->errorMessage());
+        }
+    }
+
+    public function testGetCountryCodeFunction()
+    {
+        $com_cal = $this->getMockBuilder(CommissionCalculate::class)
+            ->setMethods(array('callExternalUrl'))
+            ->getMock();
+
+        $com_cal->expects($this->any())
+            ->method('callExternalUrl')
+            ->will($this->returnValue(['country' => ['alpha2' => 'LT']]));
+
+        $this->assertEquals('LT', $com_cal->getCountryCode('516793'));
+
+        try {
+            $com_cal->expects($this->any())
+                ->method('callExternalUrl')
+                ->willThrowException(new BinCheckUrlDataFormatException());
+            $com_cal->getCountryCode('516793');
+        } catch (BinCheckUrlDataFormatException $e) {
+            $this->assertStringContainsString('Bin url response data format is not as expected.', $e->errorMessage());
+        }
+    }
+
+    public function testCeilingFunction()
+    {
+        $this->assertEquals(0.47, $this->comm_cal->ceiling(0.46180844185832, 2));
+        $this->assertEquals(1.66, $this->comm_cal->ceiling(1.6574127786525, 2));
+        $this->assertEquals(2.41, $this->comm_cal->ceiling(2.4014038976632, 2));
+        $this->assertEquals(43.72, $this->comm_cal->ceiling(43.714413735069, 2));
+    }
+
+    public function testOutputCurrencyFunction()
+    {
+        $com_cal = $this->getMockBuilder(CommissionCalculate::class)
+            ->setMethods(array('getRate'))
+            ->getMock();
+
+        $com_cal->expects($this->any())
+            ->method('getRate')
+            ->will($this->returnValue(1.1276));
+
+        $this->assertEquals(0.46180844185832, $com_cal->outputCurrency(0.46180844185832, "EUR", "EUR"));
+        $this->assertEquals(0.52073519903944, $com_cal->outputCurrency(0.46180844185832, "EUR", "USD"));
+    }
+
+    public function testIsEuropeUnionFunction()
+    {
+        $this->assertFalse($this->comm_cal->isEuropeUnion("BD"));
+        $this->assertTrue($this->comm_cal->isEuropeUnion("DK"));
     }
 }
