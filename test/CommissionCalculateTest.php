@@ -74,22 +74,22 @@ class CommissionCalculateTest extends TestCase
 
         $com_cal->expects($this->any())
             ->method('getCountryCode')
-            ->will($this->returnValue('PO'));
+            ->will($this->returnValue('LT'));
 
         $com_cal->expects($this->any())
             ->method('getRate')
-            ->will($this->returnValue(1.674554));
+            ->will($this->returnValue(1.1276));
 
         $com_cal->expects($this->any())
             ->method('outputCurrency')
             ->will($this->returnValue(0.46180844185832));
 
-        $this->assertIsArray($com_cal->calculateData([
+        $this->assertEquals(0.47, $com_cal->calculateData([
             [
-                "bin" => 45717360,
-                "amount" => 00.00,
-                "currency" => "EUR"
+                "bin" => 516793,
+                "amount" => 50.00,
+                "currency" => "USD"
             ]
-        ]));
+        ])[0]);
     }
 }
