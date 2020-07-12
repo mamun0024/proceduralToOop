@@ -66,20 +66,30 @@ class CommissionCalculateTest extends TestCase
         $this->assertStringContainsString('Ex eu comm must be numeric', $response2);
     }
 
-    public function testCalculateDataFunction()
+    public function testCalculateDataReturnData()
     {
         $com_cal = $this->getMockBuilder(CommissionCalculate::class)
+            ->setMethods(array('getCountryCode', 'getRate', 'outputCurrency'))
             ->getMock();
 
-        $com_cal->expects($this->once())
-            ->method('calculateData')
-            ->will($this->returnValue([
-                "1.00",
-                "0.45",
-                "1.67",
-                "2.31",
-                "44.66"
-            ]));
-        $this->assertIsArray($com_cal->calculateData([]));
+        $com_cal->expects($this->any())
+            ->method('getCountryCode')
+            ->will($this->returnValue('PO'));
+
+        $com_cal->expects($this->any())
+            ->method('getRate')
+            ->will($this->returnValue(1.674554));
+
+        $com_cal->expects($this->any())
+            ->method('outputCurrency')
+            ->will($this->returnValue(0.46180844185832));
+
+        $this->assertIsArray($com_cal->calculateData([
+            [
+                "bin" => 45717360,
+                "amount" => 00.00,
+                "currency" => "EUR"
+            ]
+        ]));
     }
 }
