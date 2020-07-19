@@ -288,6 +288,8 @@ class CommissionCalculate extends CommissionFile
                 if ($this->checkFileExistence()) {
                     $data = $this->calculateData($this->readFile());
                     $response = $this->response(200, "Data successfully fetched.", $data);
+                } else {
+                    $response = $this->response(422, "File not exists.");
                 }
             } else {
                 $response = $this->response(422, "Request param validation error.", $validator->validateInputError());
