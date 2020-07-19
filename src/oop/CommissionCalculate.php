@@ -11,6 +11,7 @@ use Oop\Traits\HelperTrait;
 use Oop\Traits\ResponseTrait;
 use Oop\Requests\CalculateCommissionRequest;
 use Oop\Utils\EuCountryCodeList;
+use Oop\RemoteService;
 
 class CommissionCalculate extends CommissionFile
 {
@@ -184,19 +185,13 @@ class CommissionCalculate extends CommissionFile
      */
     public function callExternalUrl($base_url, $endpoint, $data = [], $type = "GET")
     {
-        $http_base_url = $base_url;
-        $http_endpoint = $endpoint;
-        $http_data     = $data;
-        $http_type     = $type;
+        $remote_service = new RemoteService();
+        $remote_service->setBaseUrl($base_url);
+        $remote_service->setRequestEndpoint($endpoint);
+        $remote_service->setRequestData($data);
+        $remote_service->setRequestType($type);
 
-        // Call api.
-        $http_response  = $this->httpRequest(
-            $http_base_url,
-            $http_endpoint,
-            $http_data,
-            $http_type
-        );
-        return json_decode($http_response->getBody()->getContents(), true);
+        return $remote_service->httpRequest();
     }
 
     /**
