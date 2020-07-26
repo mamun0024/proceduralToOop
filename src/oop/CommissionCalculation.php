@@ -3,17 +3,15 @@
 namespace Oop;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Oop\Exceptions\FileDataFormatException;
-use Oop\Exceptions\FileNotExistsException;
 use Oop\Exceptions\BinCheckUrlDataFormatException;
 use Oop\Exceptions\RateUrlDataFormatException;
+use Oop\Interfaces\CountryCodeFormatInterface;
+use Oop\Interfaces\RateFormatInterface;
 use Oop\Traits\HelperTrait;
 use Oop\Traits\ResponseTrait;
-use Oop\Requests\CalculateCommissionRequest;
 use Oop\Utils\EuCountryCodeList;
-use Oop\RemoteService;
 
-class CommissionCalculate extends CommissionFile
+class CommissionCalculation
 {
     use ResponseTrait;
     use HelperTrait;
@@ -24,6 +22,37 @@ class CommissionCalculate extends CommissionFile
 
     private $eu_commission;
     private $except_eu_commission;
+
+    private $country_code_fetch;
+    private $rate_fetch;
+
+    /**
+     * @param $bin_url
+     * @param $rate_url
+     * @param $currency
+     * @param $eu_comm
+     * @param $ex_eu_comm
+     * @param CountryCodeFormatInterface $country_code
+     * @param RateFormatInterface $rate
+     */
+    public function __construct(
+        $bin_url,
+        $rate_url,
+        $currency,
+        $eu_comm,
+        $ex_eu_comm,
+        CountryCodeFormatInterface $country_code,
+        RateFormatInterface $rate
+    ) {
+        $this->setBinUrl($bin_url);
+        $this->setRateUrl($rate_url);
+        $this->setOutputCurrency($currency);
+        $this->setEuCommission($eu_comm);
+        $this->setExceptEuCommission($ex_eu_comm);
+
+        $this->country_code_fetch = $country_code;
+        $this->rate_fetch = $rate;
+    }
 
     /**
      * @return string
@@ -106,20 +135,6 @@ class CommissionCalculate extends CommissionFile
     }
 
     /**
-     * @param array $inputs
-     */
-    public function setAllData($inputs)
-    {
-        $this->setFileName($inputs['file_name']);
-        $this->setFilePath($inputs['file_path']);
-        $this->setBinUrl($inputs['bin_url']);
-        $this->setRateUrl($inputs['rate_url']);
-        $this->setOutputCurrency($inputs['currency']);
-        $this->setEuCommission($inputs['eu_comm']);
-        $this->setExceptEuCommission($inputs['ex_eu_comm']);
-    }
-
-    /**
      * Checked the provided country
      * code included in Europe Union
      *
@@ -146,7 +161,6 @@ class CommissionCalculate extends CommissionFile
      *
      * @return float
      * @throws GuzzleException
-     * @throws RateUrlDataFormatException
      */
     public function outputCurrency($value, $from, $to)
     {
@@ -206,11 +220,7 @@ class CommissionCalculate extends CommissionFile
     public function getCountryCode($bin)
     {
         $response_data = $this->callExternalUrl($this->getBinUrl(), $bin);
-        if (!$this->emptyCheck($response_data['country']['alpha2'])) {
-            throw new BinCheckUrlDataFormatException();
-        } else {
-            return $response_data['country']['alpha2'];
-        }
+        return $this->country_code_fetch->fetchCountryCode($response_data);
     }
 
     /**
@@ -226,10 +236,7 @@ class CommissionCalculate extends CommissionFile
     {
         $response_data = $this->callExternalUrl($this->getRateUrl(), $this->getRateUrl());
         if ($row_currency != "EUR") {
-            if (!$this->emptyCheck($response_data['rates'][$row_currency])) {
-                throw new RateUrlDataFormatException();
-            }
-            $rate = $response_data['rates'][$row_currency];
+            $rate = $this->rate_fetch->fetchRate($row_currency, $response_data);
         } else {
             $rate = 0;
         }
@@ -271,42 +278,5 @@ class CommissionCalculate extends CommissionFile
             $data[] = number_format($ceil_with_precision, 2, '.', '');
         }
         return $data;
-    }
-
-    /**
-     * Run this app.
-     *
-     * @param array $inputs
-     * @return mixed
-     */
-    public function calculate($inputs)
-    {
-        try {
-            $validator = new CalculateCommissionRequest();
-            if ($validator->validateInput($inputs)) {
-                $this->setAllData($inputs);
-                if ($this->checkFileExistence()) {
-                    $data = $this->calculateData($this->readFile());
-                    $response = $this->response(200, "Data successfully fetched.", $data);
-                } else {
-                    $response = $this->response(422, "File not exists.");
-                }
-            } else {
-                $response = $this->response(422, "Request param validation error.", $validator->validateInputError());
-            }
-        } catch (FileNotExistsException $e) {
-            $response = $this->response(500, $e->errorMessage());
-        } catch (FileDataFormatException $e) {
-            $response = $this->response(500, $e->errorMessage());
-        } catch (GuzzleException $e) {
-            $response = $this->response(500, "Exception : " . $e->getMessage());
-        } catch (RateUrlDataFormatException $e) {
-            $response = $this->response(500, $e->errorMessage());
-        } catch (BinCheckUrlDataFormatException $e) {
-            $response = $this->response(500, $e->errorMessage());
-        } catch (\Exception $e) {
-            $response = $this->response(500, "Exception : " . $e->getMessage());
-        }
-        return $response;
     }
 }

@@ -5,15 +5,28 @@ namespace Oop;
 use Oop\Exceptions\FileDataFormatException;
 use Oop\Exceptions\FileNotExistsException;
 use Oop\Traits\HelperTrait;
+use Oop\Interfaces\CommissionFileInterface;
 use SplFileObject;
 
-class CommissionFile
+class CommissionFile implements CommissionFileInterface
 {
     use HelperTrait;
 
     private $file;
     private $file_name;
     private $file_path;
+
+    /**
+     * @param $file_name
+     * @param null $file_path
+     * @throws FileNotExistsException
+     */
+    public function __construct($file_name, $file_path = null)
+    {
+        $this->setFileName($file_name);
+        $this->setFilePath($file_path);
+        $this->checkFileExistence();
+    }
 
     /**
      * @return SplFileObject

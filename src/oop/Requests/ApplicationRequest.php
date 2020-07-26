@@ -2,7 +2,7 @@
 
 namespace Oop\Requests;
 
-class CalculateCommissionRequest extends Request
+class ApplicationRequest extends Request
 {
     private $validationError;
 
@@ -15,12 +15,12 @@ class CalculateCommissionRequest extends Request
     public function validateInput($data)
     {
         $validation = $this->validate($data, [
-            'file_name' => 'required',
-            'bin_url'   => 'required',
-            'rate_url'  => 'required',
-            'currency'  => 'required',
-            'eu_comm'   => 'required|numeric',
-            'ex_eu_comm' => 'required|numeric'
+            'file_name'        => 'required',
+            'bin_check_url'    => 'required',
+            'rate_url'         => 'required',
+            'currency'         => 'required',
+            'eu_commission'    => 'required|numeric',
+            'ex_eu_commission' => 'required|numeric'
         ]);
 
         if ($validation->fails()) {
