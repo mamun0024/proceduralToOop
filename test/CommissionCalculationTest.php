@@ -15,13 +15,13 @@ require_once __DIR__ . '/../oop/app/CountryCodeFormat.php';
 require_once __DIR__ . '/../oop/app/RateFormat.php';
 require_once __DIR__ . '/../oop/app/CommissionCalculation.php';
 
-use Oop\CommissionCalculation;
-use Oop\CountryCodeFormat;
-use Oop\Exceptions\BinCheckUrlDataFormatException;
-use Oop\Exceptions\RateUrlDataFormatException;
-use Oop\RateFormat;
-use Oop\Traits\HelperTrait;
-use Oop\Traits\ResponseTrait;
+use App\CommissionCalculation;
+use App\CountryCodeFormat;
+use App\Exceptions\BinCheckUrlDataFormatException;
+use App\Exceptions\RateUrlDataFormatException;
+use App\RateFormat;
+use App\Traits\HelperTrait;
+use App\Traits\ResponseTrait;
 use PHPUnit\Framework\TestCase;
 
 class CommissionCalculationTest extends TestCase

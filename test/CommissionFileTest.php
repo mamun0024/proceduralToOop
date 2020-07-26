@@ -9,10 +9,10 @@ require_once __DIR__ . '/../oop/app/Traits/HelperTrait.php';
 require_once __DIR__ . '/../oop/app/Interfaces/CommissionFileInterface.php';
 require_once __DIR__ . '/../oop/app/CommissionFile.php';
 
-use Oop\CommissionFile;
-use Oop\Exceptions\FileDataFormatException;
-use Oop\Exceptions\FileNotExistsException;
-use Oop\Traits\HelperTrait;
+use App\CommissionFile;
+use App\Exceptions\FileDataFormatException;
+use App\Exceptions\FileNotExistsException;
+use App\Traits\HelperTrait;
 use PHPUnit\Framework\TestCase;
 
 class CommissionFileTest extends TestCase

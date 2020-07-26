@@ -12,9 +12,9 @@ require_once __DIR__ . '/../oop/app/Interfaces/CommissionFileInterface.php';
 require_once __DIR__ . '/../oop/app/CommissionFile.php';
 require_once __DIR__ . '/../oop/app/CommissionCalculation.php';
 
-use Oop\Application;
-use Oop\Traits\HelperTrait;
-use Oop\Traits\ResponseTrait;
+use App\Application;
+use App\Traits\HelperTrait;
+use App\Traits\ResponseTrait;
 use PHPUnit\Framework\TestCase;
 
 class ApplicationTest extends TestCase
