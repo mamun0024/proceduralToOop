@@ -1,13 +1,13 @@
 <?php
 
-namespace Oop;
+namespace App;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Oop\Interfaces\CountryCodeFormatInterface;
-use Oop\Interfaces\RateFormatInterface;
-use Oop\Traits\HelperTrait;
-use Oop\Traits\ResponseTrait;
-use Oop\Utils\EuCountryCodeList;
+use App\Interfaces\CountryCodeFormatInterface;
+use App\Interfaces\RateFormatInterface;
+use App\Traits\HelperTrait;
+use App\Traits\ResponseTrait;
+use App\Utils\EuCountryCodeList;
 
 class CommissionCalculation
 {

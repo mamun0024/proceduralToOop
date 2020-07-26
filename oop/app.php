@@ -7,7 +7,7 @@ spl_autoload_register(function ($class_name) {
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Oop\Application;
+use App\Application;
 
 $dot_env = Dotenv\Dotenv::createMutable(__DIR__ . '/../');
 $dot_env->load();

@@ -2,15 +2,15 @@
 
 namespace Test;
 
-require_once __DIR__ . '/../src/oop/Requests/Request.php';
-require_once __DIR__ . '/../src/oop/Requests/ApplicationRequest.php';
-require_once __DIR__ . '/../src/oop/Traits/HelperTrait.php';
-require_once __DIR__ . '/../src/oop/Traits/ResponseTrait.php';
-require_once __DIR__ . '/../src/oop/Utils/EuCountryCodeList.php';
-require_once __DIR__ . '/../src/oop/Application.php';
-require_once __DIR__ . '/../src/oop/Interfaces/CommissionFileInterface.php';
-require_once __DIR__ . '/../src/oop/CommissionFile.php';
-require_once __DIR__ . '/../src/oop/CommissionCalculation.php';
+require_once __DIR__ . '/../oop/app/Requests/Request.php';
+require_once __DIR__ . '/../oop/app/Requests/ApplicationRequest.php';
+require_once __DIR__ . '/../oop/app/Traits/HelperTrait.php';
+require_once __DIR__ . '/../oop/app/Traits/ResponseTrait.php';
+require_once __DIR__ . '/../oop/app/Utils/EuCountryCodeList.php';
+require_once __DIR__ . '/../oop/app/Application.php';
+require_once __DIR__ . '/../oop/app/Interfaces/CommissionFileInterface.php';
+require_once __DIR__ . '/../oop/app/CommissionFile.php';
+require_once __DIR__ . '/../oop/app/CommissionCalculation.php';
 
 use Oop\Application;
 use Oop\Traits\HelperTrait;

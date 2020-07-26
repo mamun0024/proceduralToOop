@@ -1,10 +1,10 @@
 <?php
 
-namespace Oop;
+namespace App;
 
-use Oop\Exceptions\BinCheckUrlDataFormatException;
-use Oop\Interfaces\CountryCodeFormatInterface;
-use Oop\Traits\HelperTrait;
+use App\Exceptions\BinCheckUrlDataFormatException;
+use App\Interfaces\CountryCodeFormatInterface;
+use App\Traits\HelperTrait;
 
 class CountryCodeFormat implements CountryCodeFormatInterface
 {

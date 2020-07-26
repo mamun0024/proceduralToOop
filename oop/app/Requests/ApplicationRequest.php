@@ -1,6 +1,6 @@
 <?php
 
-namespace Oop\Requests;
+namespace App\Requests;
 
 class ApplicationRequest extends Request
 {

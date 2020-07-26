@@ -1,10 +1,10 @@
 <?php
 
-namespace Oop;
+namespace App;
 
-use Oop\Exceptions\RateUrlDataFormatException;
-use Oop\Interfaces\RateFormatInterface;
-use Oop\Traits\HelperTrait;
+use App\Exceptions\RateUrlDataFormatException;
+use App\Interfaces\RateFormatInterface;
+use App\Traits\HelperTrait;
 
 class RateFormat implements RateFormatInterface
 {

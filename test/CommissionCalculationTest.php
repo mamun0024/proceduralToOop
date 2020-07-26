@@ -2,18 +2,18 @@
 
 namespace Test;
 
-require_once __DIR__ . '/../src/oop/Exceptions/BaseException.php';
-require_once __DIR__ . '/../src/oop/Exceptions/BinCheckUrlDataFormatException.php';
-require_once __DIR__ . '/../src/oop/Exceptions/RateUrlDataFormatException.php';
-require_once __DIR__ . '/../src/oop/Requests/Request.php';
-require_once __DIR__ . '/../src/oop/Traits/HelperTrait.php';
-require_once __DIR__ . '/../src/oop/Traits/ResponseTrait.php';
-require_once __DIR__ . '/../src/oop/Utils/EuCountryCodeList.php';
-require_once __DIR__ . '/../src/oop/Interfaces/CountryCodeFormatInterface.php';
-require_once __DIR__ . '/../src/oop/Interfaces/RateFormatInterface.php';
-require_once __DIR__ . '/../src/oop/CountryCodeFormat.php';
-require_once __DIR__ . '/../src/oop/RateFormat.php';
-require_once __DIR__ . '/../src/oop/CommissionCalculation.php';
+require_once __DIR__ . '/../oop/app/Exceptions/BaseException.php';
+require_once __DIR__ . '/../oop/app/Exceptions/BinCheckUrlDataFormatException.php';
+require_once __DIR__ . '/../oop/app/Exceptions/RateUrlDataFormatException.php';
+require_once __DIR__ . '/../oop/app/Requests/Request.php';
+require_once __DIR__ . '/../oop/app/Traits/HelperTrait.php';
+require_once __DIR__ . '/../oop/app/Traits/ResponseTrait.php';
+require_once __DIR__ . '/../oop/app/Utils/EuCountryCodeList.php';
+require_once __DIR__ . '/../oop/app/Interfaces/CountryCodeFormatInterface.php';
+require_once __DIR__ . '/../oop/app/Interfaces/RateFormatInterface.php';
+require_once __DIR__ . '/../oop/app/CountryCodeFormat.php';
+require_once __DIR__ . '/../oop/app/RateFormat.php';
+require_once __DIR__ . '/../oop/app/CommissionCalculation.php';
 
 use Oop\CommissionCalculation;
 use Oop\CountryCodeFormat;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Oop\Exceptions;
+namespace App\Exceptions;
 
 class FileDataFormatException extends BaseException
 {

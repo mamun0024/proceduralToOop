@@ -2,12 +2,12 @@
 
 namespace Test;
 
-require_once __DIR__ . '/../src/oop/Exceptions/BaseException.php';
-require_once __DIR__ . '/../src/oop/Exceptions/FileNotExistsException.php';
-require_once __DIR__ . '/../src/oop/Exceptions/FileDataFormatException.php';
-require_once __DIR__ . '/../src/oop/Traits/HelperTrait.php';
-require_once __DIR__ . '/../src/oop/Interfaces/CommissionFileInterface.php';
-require_once __DIR__ . '/../src/oop/CommissionFile.php';
+require_once __DIR__ . '/../oop/app/Exceptions/BaseException.php';
+require_once __DIR__ . '/../oop/app/Exceptions/FileNotExistsException.php';
+require_once __DIR__ . '/../oop/app/Exceptions/FileDataFormatException.php';
+require_once __DIR__ . '/../oop/app/Traits/HelperTrait.php';
+require_once __DIR__ . '/../oop/app/Interfaces/CommissionFileInterface.php';
+require_once __DIR__ . '/../oop/app/CommissionFile.php';
 
 use Oop\CommissionFile;
 use Oop\Exceptions\FileDataFormatException;

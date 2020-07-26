@@ -1,11 +1,11 @@
 <?php
 
-namespace Oop;
+namespace App;
 
-use Oop\Exceptions\FileDataFormatException;
-use Oop\Exceptions\FileNotExistsException;
-use Oop\Traits\HelperTrait;
-use Oop\Interfaces\CommissionFileInterface;
+use App\Exceptions\FileDataFormatException;
+use App\Exceptions\FileNotExistsException;
+use App\Traits\HelperTrait;
+use App\Interfaces\CommissionFileInterface;
 use SplFileObject;
 
 class CommissionFile implements CommissionFileInterface

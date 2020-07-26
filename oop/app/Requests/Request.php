@@ -1,6 +1,6 @@
 <?php
 
-namespace Oop\Requests;
+namespace App\Requests;
 
 use Rakit\Validation\Validator;
 

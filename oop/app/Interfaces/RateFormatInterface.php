@@ -1,6 +1,6 @@
 <?php
 
-namespace Oop\Interfaces;
+namespace App\Interfaces;
 
 interface RateFormatInterface
 {

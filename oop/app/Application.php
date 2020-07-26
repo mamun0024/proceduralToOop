@@ -1,14 +1,14 @@
 <?php
 
-namespace Oop;
+namespace App;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Oop\Exceptions\BinCheckUrlDataFormatException;
-use Oop\Exceptions\FileDataFormatException;
-use Oop\Exceptions\FileNotExistsException;
-use Oop\Exceptions\RateUrlDataFormatException;
-use Oop\Requests\ApplicationRequest;
-use Oop\Traits\ResponseTrait;
+use App\Exceptions\BinCheckUrlDataFormatException;
+use App\Exceptions\FileDataFormatException;
+use App\Exceptions\FileNotExistsException;
+use App\Exceptions\RateUrlDataFormatException;
+use App\Requests\ApplicationRequest;
+use App\Traits\ResponseTrait;
 
 class Application
 {

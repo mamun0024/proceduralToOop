@@ -1,6 +1,6 @@
 <?php
 
-namespace Oop\Utils;
+namespace App\Utils;
 
 class EuCountryCodeList
 {
