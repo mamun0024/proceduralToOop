@@ -24,7 +24,7 @@ class Application
     /**
      * Run the app.
      *
-     * @return void
+     * @return mixed
      */
     public function run()
     {
@@ -35,6 +35,7 @@ class Application
                     $this->settings['file_name'],
                     $this->settings['file_path']
                 );
+                $comm_file->checkFileExistence();
                 $comm_file_data = $comm_file->readFile();
 
                 $comm_cal = new CommissionCalculation(
@@ -66,8 +67,6 @@ class Application
             $response = $this->response(500, "Exception : " . $e->getMessage());
         }
 
-        echo "<pre>";
-        print_r($response);
-        echo "</pre>";
+        return $response;
     }
 }

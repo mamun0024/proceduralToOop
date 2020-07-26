@@ -19,13 +19,11 @@ class CommissionFile implements CommissionFileInterface
     /**
      * @param $file_name
      * @param null $file_path
-     * @throws FileNotExistsException
      */
     public function __construct($file_name, $file_path = null)
     {
         $this->setFileName($file_name);
         $this->setFilePath($file_path);
-        $this->checkFileExistence();
     }
 
     /**

@@ -4,27 +4,27 @@ namespace Test;
 
 require_once __DIR__ . '/../src/oop/Exceptions/BaseException.php';
 require_once __DIR__ . '/../src/oop/Exceptions/BinCheckUrlDataFormatException.php';
-require_once __DIR__ . '/../src/oop/Exceptions/FileDataFormatException.php';
-require_once __DIR__ . '/../src/oop/Exceptions/FileNotExistsException.php';
 require_once __DIR__ . '/../src/oop/Exceptions/RateUrlDataFormatException.php';
 require_once __DIR__ . '/../src/oop/Requests/Request.php';
-require_once __DIR__ . '/../src/oop/Requests/CalculateCommissionRequest.php';
 require_once __DIR__ . '/../src/oop/Traits/HelperTrait.php';
 require_once __DIR__ . '/../src/oop/Traits/ResponseTrait.php';
 require_once __DIR__ . '/../src/oop/Utils/EuCountryCodeList.php';
-require_once __DIR__ . '/../src/oop/CommissionFile.php';
-require_once __DIR__ . '/../src/oop/CommissionCalculate.php';
+require_once __DIR__ . '/../src/oop/Interfaces/CountryCodeFormatInterface.php';
+require_once __DIR__ . '/../src/oop/Interfaces/RateFormatInterface.php';
+require_once __DIR__ . '/../src/oop/CountryCodeFormat.php';
+require_once __DIR__ . '/../src/oop/RateFormat.php';
+require_once __DIR__ . '/../src/oop/CommissionCalculation.php';
 
-use GuzzleHttp\Exception\GuzzleException;
-use Oop\CommissionCalculate;
-use Oop\CommissionFile;
+use Oop\CommissionCalculation;
+use Oop\CountryCodeFormat;
 use Oop\Exceptions\BinCheckUrlDataFormatException;
 use Oop\Exceptions\RateUrlDataFormatException;
+use Oop\RateFormat;
 use Oop\Traits\HelperTrait;
 use Oop\Traits\ResponseTrait;
 use PHPUnit\Framework\TestCase;
 
-class CommissionCalculateTest extends TestCase
+class CommissionCalculationTest extends TestCase
 {
     use HelperTrait;
     use ResponseTrait;
@@ -33,43 +33,21 @@ class CommissionCalculateTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->comm_cal = new CommissionCalculate();
-    }
-
-    public function testInputValidation()
-    {
-        $response = $this->comm_cal->calculate([
-            'file_name' => '',
-            'file_path' => '',
-            'bin_url'   => '',
-            'rate_url'  => '',
-            'currency'  => '',
-            'eu_comm'   => '',
-            'ex_eu_comm' => '',
-        ]);
-        $this->assertStringContainsString('File name is required', $response);
-        $this->assertStringContainsString('Bin url is required', $response);
-        $this->assertStringContainsString('Rate url is required', $response);
-        $this->assertStringContainsString('Currency is required', $response);
-        $this->assertStringContainsString('Eu comm is required', $response);
-        $this->assertStringContainsString('Ex eu comm is required', $response);
-
-        $response2 = $this->comm_cal->calculate([
-            'file_name' => 'input.txt',
-            'file_path' => 'files/',
-            'bin_url'   => 'https://lookup.binlist.net',
-            'rate_url'  => 'https://api.exchangeratesapi.io/latest',
-            'currency'  => 'EUR',
-            'eu_comm'   => 'eu_comm',
-            'ex_eu_comm' => 'ex_eu_comm',
-        ]);
-        $this->assertStringContainsString('Eu comm must be numeric', $response2);
-        $this->assertStringContainsString('Ex eu comm must be numeric', $response2);
+        $this->comm_cal = new CommissionCalculation(
+            'https://test_bin',
+            'https://test_rate',
+            'EUR',
+            '0.01',
+            '0.02',
+            new CountryCodeFormat(),
+            new RateFormat()
+        );
     }
 
     public function testCalculateDataFunction()
     {
-        $com_cal = $this->getMockBuilder(CommissionCalculate::class)
+        $com_cal = $this->getMockBuilder(CommissionCalculation::class)
+            ->disableOriginalConstructor()
             ->setMethods(array('getCountryCode', 'getRate', 'outputCurrency'))
             ->getMock();
 
@@ -96,13 +74,18 @@ class CommissionCalculateTest extends TestCase
 
     public function testGetRateFunction()
     {
-        $com_cal = $this->getMockBuilder(CommissionCalculate::class)
-            ->setMethods(array('callExternalUrl'))
+        $com_cal = $this->getMockBuilder(CommissionCalculation::class)
+            ->disableOriginalConstructor()
+            ->setMethods(array('callExternalUrl', 'fetchRate'))
             ->getMock();
 
         $com_cal->expects($this->any())
             ->method('callExternalUrl')
             ->will($this->returnValue(['rates' => ['USD' => 1.1276]]));
+
+        $com_cal->expects($this->any())
+            ->method('fetchRate')
+            ->will($this->returnValue(1.1276));
 
         $this->assertEquals(1.1276, $com_cal->getRate('USD'));
         $this->assertEquals(0, $com_cal->getRate('EUR'));
@@ -119,13 +102,18 @@ class CommissionCalculateTest extends TestCase
 
     public function testGetCountryCodeFunction()
     {
-        $com_cal = $this->getMockBuilder(CommissionCalculate::class)
-            ->setMethods(array('callExternalUrl'))
+        $com_cal = $this->getMockBuilder(CommissionCalculation::class)
+            ->disableOriginalConstructor()
+            ->setMethods(array('callExternalUrl', 'fetchCountryCode'))
             ->getMock();
 
         $com_cal->expects($this->any())
             ->method('callExternalUrl')
             ->will($this->returnValue(['country' => ['alpha2' => 'LT']]));
+
+        $com_cal->expects($this->any())
+            ->method('fetchCountryCode')
+            ->will($this->returnValue('LT'));
 
         $this->assertEquals('LT', $com_cal->getCountryCode('516793'));
 
@@ -149,7 +137,8 @@ class CommissionCalculateTest extends TestCase
 
     public function testOutputCurrencyFunction()
     {
-        $com_cal = $this->getMockBuilder(CommissionCalculate::class)
+        $com_cal = $this->getMockBuilder(CommissionCalculation::class)
+            ->disableOriginalConstructor()
             ->setMethods(array('getRate'))
             ->getMock();
 

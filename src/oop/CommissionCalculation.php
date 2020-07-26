@@ -3,8 +3,6 @@
 namespace Oop;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Oop\Exceptions\BinCheckUrlDataFormatException;
-use Oop\Exceptions\RateUrlDataFormatException;
 use Oop\Interfaces\CountryCodeFormatInterface;
 use Oop\Interfaces\RateFormatInterface;
 use Oop\Traits\HelperTrait;
@@ -23,8 +21,8 @@ class CommissionCalculation
     private $eu_commission;
     private $except_eu_commission;
 
-    private $country_code_fetch;
-    private $rate_fetch;
+    private $country_code_interface;
+    private $rate_interface;
 
     /**
      * @param $bin_url
@@ -50,8 +48,8 @@ class CommissionCalculation
         $this->setEuCommission($eu_comm);
         $this->setExceptEuCommission($ex_eu_comm);
 
-        $this->country_code_fetch = $country_code;
-        $this->rate_fetch = $rate;
+        $this->country_code_interface = $country_code;
+        $this->rate_interface = $rate;
     }
 
     /**
@@ -209,18 +207,42 @@ class CommissionCalculation
     }
 
     /**
+     * Country Code data format.
+     *
+     * @param $response_data
+     *
+     * @return float|integer
+     */
+    public function fetchCountryCode($response_data)
+    {
+        return $this->country_code_interface->fetchCountryCode($response_data);
+    }
+
+    /**
      * Call Bin Check URL.
      *
      * @param integer $bin
      *
      * @return string
      * @throws GuzzleException
-     * @throws BinCheckUrlDataFormatException
      */
     public function getCountryCode($bin)
     {
         $response_data = $this->callExternalUrl($this->getBinUrl(), $bin);
-        return $this->country_code_fetch->fetchCountryCode($response_data);
+        return $this->fetchCountryCode($response_data);
+    }
+
+    /**
+     * Rate data format.
+     *
+     * @param string $row_currency
+     * @param $response_data
+     *
+     * @return float|integer
+     */
+    public function fetchRate($row_currency, $response_data)
+    {
+        return $this->rate_interface->fetchRate($row_currency, $response_data);
     }
 
     /**
@@ -230,13 +252,12 @@ class CommissionCalculation
      *
      * @return float|integer
      * @throws GuzzleException
-     * @throws RateUrlDataFormatException
      */
     public function getRate($row_currency)
     {
         $response_data = $this->callExternalUrl($this->getRateUrl(), $this->getRateUrl());
         if ($row_currency != "EUR") {
-            $rate = $this->rate_fetch->fetchRate($row_currency, $response_data);
+            $rate = $this->fetchRate($row_currency, $response_data);
         } else {
             $rate = 0;
         }
@@ -250,9 +271,7 @@ class CommissionCalculation
      * @param array $rowData
      *
      * @return array
-     * @throws BinCheckUrlDataFormatException
      * @throws GuzzleException
-     * @throws RateUrlDataFormatException
      */
     public function calculateData($rowData)
     {

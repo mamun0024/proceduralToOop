@@ -6,6 +6,7 @@ require_once __DIR__ . '/../src/oop/Exceptions/BaseException.php';
 require_once __DIR__ . '/../src/oop/Exceptions/FileNotExistsException.php';
 require_once __DIR__ . '/../src/oop/Exceptions/FileDataFormatException.php';
 require_once __DIR__ . '/../src/oop/Traits/HelperTrait.php';
+require_once __DIR__ . '/../src/oop/Interfaces/CommissionFileInterface.php';
 require_once __DIR__ . '/../src/oop/CommissionFile.php';
 
 use Oop\CommissionFile;
@@ -22,7 +23,7 @@ class CommissionFileTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->comm_file = new CommissionFile();
+        $this->comm_file = new CommissionFile('input.txt', 'files');
     }
 
     public function testGetFilePath()
@@ -51,53 +52,43 @@ class CommissionFileTest extends TestCase
         $this->assertEquals("files/test/", $this->comm_file->getFilePath());
     }
 
-    public function testFileExistenceCheckReturnTrue()
+    public function testCheckFileExistenceFunction()
     {
-        $this->comm_file->setFileName('input_test1.txt');
-        $this->comm_file->setFilePath('files/test/');
+        $com_file = $this->getMockBuilder(CommissionFile::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $com_file->expects($this->any())
+            ->method('checkFileExistence')
+            ->will($this->returnValue(true));
+        $this->assertTrue($com_file->checkFileExistence());
+
         try {
-            $this->assertTrue($this->comm_file->checkFileExistence());
+            $com_file->expects($this->any())
+                ->method('checkFileExistence')
+                ->willThrowException(new FileNotExistsException());
+            $com_file->checkFileExistence();
         } catch (FileNotExistsException $e) {
-            echo $e->errorMessage();
+            $this->assertStringContainsString('Input file is not exists.', $e->errorMessage());
         }
     }
 
-    public function testFileExistenceCheckThrowException()
+    public function testReadFileFunction()
     {
-        $this->comm_file->setFileName('input_test12.txt');
-        $this->comm_file->setFilePath('files/test/');
-        try {
-            $this->comm_file->checkFileExistence();
-        } catch (FileNotExistsException $e) {
-            $this->assertStringContainsString('Input file is not exists', $e->errorMessage());
-        }
-    }
+        $com_file = $this->getMockBuilder(CommissionFile::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $com_file->expects($this->any())
+            ->method('readFile')
+            ->will($this->returnValue([]));
+        $this->assertIsArray($com_file->readFile());
 
-    public function testFileReadReturnDataArray()
-    {
-        $this->comm_file->setFileName('input_test1.txt');
-        $this->comm_file->setFilePath('files/test/');
         try {
-            $this->comm_file->checkFileExistence();
-            $this->assertIsArray($this->comm_file->readFile());
+            $com_file->expects($this->any())
+                ->method('readFile')
+                ->willThrowException(new FileDataFormatException());
+            $com_file->readFile();
         } catch (FileDataFormatException $e) {
-            echo $e->errorMessage();
-        } catch (FileNotExistsException $e) {
-            echo $e->errorMessage();
-        }
-    }
-
-    public function testFileReadThrowException()
-    {
-        $this->comm_file->setFileName('input_test13.txt');
-        $this->comm_file->setFilePath('files/test/');
-        try {
-            $this->comm_file->checkFileExistence();
-            $this->comm_file->readFile();
-        } catch (FileDataFormatException $e) {
-            $this->assertStringContainsString('File data format is not as expected', $e->errorMessage());
-        } catch (FileNotExistsException $e) {
-            echo $e->errorMessage();
+            $this->assertStringContainsString('File data format is not as expected.', $e->errorMessage());
         }
     }
 }
