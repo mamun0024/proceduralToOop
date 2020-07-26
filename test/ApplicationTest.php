@@ -2,16 +2,6 @@
 
 namespace Test;
 
-require_once __DIR__ . '/../oop/app/Requests/Request.php';
-require_once __DIR__ . '/../oop/app/Requests/ApplicationRequest.php';
-require_once __DIR__ . '/../oop/app/Traits/HelperTrait.php';
-require_once __DIR__ . '/../oop/app/Traits/ResponseTrait.php';
-require_once __DIR__ . '/../oop/app/Utils/EuCountryCodeList.php';
-require_once __DIR__ . '/../oop/app/Application.php';
-require_once __DIR__ . '/../oop/app/Interfaces/CommissionFileInterface.php';
-require_once __DIR__ . '/../oop/app/CommissionFile.php';
-require_once __DIR__ . '/../oop/app/CommissionCalculation.php';
-
 use App\Application;
 use App\Traits\HelperTrait;
 use App\Traits\ResponseTrait;

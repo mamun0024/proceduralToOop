@@ -2,13 +2,6 @@
 
 namespace Test;
 
-require_once __DIR__ . '/../oop/app/Exceptions/BaseException.php';
-require_once __DIR__ . '/../oop/app/Exceptions/FileNotExistsException.php';
-require_once __DIR__ . '/../oop/app/Exceptions/FileDataFormatException.php';
-require_once __DIR__ . '/../oop/app/Traits/HelperTrait.php';
-require_once __DIR__ . '/../oop/app/Interfaces/CommissionFileInterface.php';
-require_once __DIR__ . '/../oop/app/CommissionFile.php';
-
 use App\CommissionFile;
 use App\Exceptions\FileDataFormatException;
 use App\Exceptions\FileNotExistsException;
