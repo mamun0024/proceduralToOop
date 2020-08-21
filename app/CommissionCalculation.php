@@ -158,7 +158,6 @@ class CommissionCalculation
      * @param string $to
      *
      * @return float
-     * @throws GuzzleException
      */
     public function outputCurrency($value, $from, $to)
     {
@@ -185,79 +184,51 @@ class CommissionCalculation
     }
 
     /**
-     * Call Bin Check URL.
-     *
-     * @param string $base_url
-     * @param string $endpoint
-     * @param array $data
-     * @param string $type
-     *
-     * @return array
-     * @throws GuzzleException
-     */
-    public function callExternalUrl($base_url, $endpoint, $data = [], $type = "GET")
-    {
-        $remote_service = new RemoteService();
-        $remote_service->setBaseUrl($base_url);
-        $remote_service->setRequestEndpoint($endpoint);
-        $remote_service->setRequestData($data);
-        $remote_service->setRequestType($type);
-
-        return $remote_service->httpRequest();
-    }
-
-    /**
      * Country Code data format.
      *
-     * @param $response_data
-     *
+     * @param string $bin
      * @return float|integer
      */
-    public function fetchCountryCode($response_data)
+    public function fetchCountryCode($bin)
     {
-        return $this->country_code_interface->fetchCountryCode($response_data);
+        return $this->country_code_interface->fetchCountryCode($this->getBinUrl(), $bin);
     }
 
     /**
-     * Call Bin Check URL.
+     * Get country code.
      *
      * @param integer $bin
      *
      * @return string
-     * @throws GuzzleException
      */
     public function getCountryCode($bin)
     {
-        $response_data = $this->callExternalUrl($this->getBinUrl(), $bin);
-        return $this->fetchCountryCode($response_data);
+        return $this->fetchCountryCode($bin);
     }
 
     /**
      * Rate data format.
      *
      * @param string $row_currency
-     * @param $response_data
      *
      * @return float|integer
      */
-    public function fetchRate($row_currency, $response_data)
+    public function fetchRate($row_currency)
     {
-        return $this->rate_interface->fetchRate($row_currency, $response_data);
+        return $this->rate_interface->fetchRate($this->getRateUrl(), $row_currency);
     }
 
     /**
-     * Call Rate URL.
+     * Get Rate.
      *
      * @param string $row_currency
      *
      * @return float|integer
-     * @throws GuzzleException
      */
     public function getRate($row_currency)
     {
-        $response_data = $this->callExternalUrl($this->getRateUrl(), $this->getRateUrl());
         if ($row_currency != "EUR") {
-            $rate = $this->fetchRate($row_currency, $response_data);
+            $rate = $this->fetchRate($row_currency);
         } else {
             $rate = 0;
         }
@@ -271,7 +242,6 @@ class CommissionCalculation
      * @param array $rowData
      *
      * @return array
-     * @throws GuzzleException
      */
     public function calculateData($rowData)
     {

@@ -5,19 +5,22 @@ namespace App;
 use App\Exceptions\RateUrlDataFormatException;
 use App\Interfaces\RateFormatInterface;
 use App\Traits\HelperTrait;
+use GuzzleHttp\Exception\GuzzleException;
 
 class RateFormat implements RateFormatInterface
 {
     use HelperTrait;
 
     /**
-     * @param $currency
-     * @param $response
+     * @param string $url
+     * @param string $currency
      * @return mixed
-     * @throws RateUrlDataFormatException
+     * @throws RateUrlDataFormatException|GuzzleException
      */
-    public function fetchRate($currency, $response)
+    public function fetchRate($url, $currency)
     {
+        $response = $this->callExternalUrl($url);
+
         if (!$this->emptyCheck($response['rates'][$currency])) {
             throw new RateUrlDataFormatException();
         }

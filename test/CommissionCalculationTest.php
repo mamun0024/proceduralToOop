@@ -63,12 +63,8 @@ class CommissionCalculationTest extends TestCase
     {
         $com_cal = $this->getMockBuilder(CommissionCalculation::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('callExternalUrl', 'fetchRate'))
+            ->setMethods(array('fetchRate'))
             ->getMock();
-
-        $com_cal->expects($this->any())
-            ->method('callExternalUrl')
-            ->will($this->returnValue(['rates' => ['USD' => 1.1276]]));
 
         $com_cal->expects($this->any())
             ->method('fetchRate')
@@ -79,7 +75,7 @@ class CommissionCalculationTest extends TestCase
 
         try {
             $com_cal->expects($this->any())
-                ->method('callExternalUrl')
+                ->method('fetchRate')
                 ->willThrowException(new RateUrlDataFormatException());
             $com_cal->getRate('USD');
         } catch (RateUrlDataFormatException $e) {
@@ -91,12 +87,8 @@ class CommissionCalculationTest extends TestCase
     {
         $com_cal = $this->getMockBuilder(CommissionCalculation::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('callExternalUrl', 'fetchCountryCode'))
+            ->setMethods(array('fetchCountryCode'))
             ->getMock();
-
-        $com_cal->expects($this->any())
-            ->method('callExternalUrl')
-            ->will($this->returnValue(['country' => ['alpha2' => 'LT']]));
 
         $com_cal->expects($this->any())
             ->method('fetchCountryCode')
@@ -106,7 +98,7 @@ class CommissionCalculationTest extends TestCase
 
         try {
             $com_cal->expects($this->any())
-                ->method('callExternalUrl')
+                ->method('fetchCountryCode')
                 ->willThrowException(new BinCheckUrlDataFormatException());
             $com_cal->getCountryCode('516793');
         } catch (BinCheckUrlDataFormatException $e) {

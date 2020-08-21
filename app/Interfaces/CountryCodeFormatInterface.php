@@ -4,5 +4,5 @@ namespace App\Interfaces;
 
 interface CountryCodeFormatInterface
 {
-    public function fetchCountryCode($response);
+    public function fetchCountryCode($url, $bin);
 }
