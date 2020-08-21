@@ -2,11 +2,14 @@
 
 namespace App;
 
+use App\Traits\HelperTrait;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
 class RemoteService
 {
+    use HelperTrait;
+
     protected $base_url;
     protected $request_endpoint;
     protected $request_data;
@@ -14,10 +17,18 @@ class RemoteService
 
     /**
      * Constructor
+     *
+     * @param $base_url
+     * @param null|string $request_endpoint
+     * @param array $request_data
+     * @param string $request_type
      */
-    public function __construct()
+    public function __construct($base_url, $request_endpoint = null, $request_data = [], $request_type = "GET")
     {
-        // Some code.
+        $this->setBaseUrl($base_url);
+        $this->setRequestEndpoint($request_endpoint);
+        $this->setRequestData($request_data);
+        $this->setRequestType($request_type);
     }
 
     /**
@@ -49,6 +60,7 @@ class RemoteService
      */
     public function setRequestEndpoint($request_endpoint): void
     {
+        $request_endpoint = $this->emptyCheck($request_endpoint) ? $request_endpoint : $this->getBaseUrl();
         $this->request_endpoint = $request_endpoint;
     }
 

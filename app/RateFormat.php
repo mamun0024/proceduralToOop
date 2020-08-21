@@ -19,7 +19,8 @@ class RateFormat implements RateFormatInterface
      */
     public function fetchRate($url, $currency)
     {
-        $response = $this->callExternalUrl($url);
+        $remote_service = new RemoteService($url);
+        $response = $remote_service->httpRequest();
 
         if (!$this->emptyCheck($response['rates'][$currency])) {
             throw new RateUrlDataFormatException();

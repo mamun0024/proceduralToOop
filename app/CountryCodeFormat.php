@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Exceptions\BinCheckUrlDataFormatException;
-use App\Exceptions\RateUrlDataFormatException;
 use App\Interfaces\CountryCodeFormatInterface;
 use App\Traits\HelperTrait;
 use GuzzleHttp\Exception\GuzzleException;
@@ -20,7 +19,8 @@ class CountryCodeFormat implements CountryCodeFormatInterface
      */
     public function fetchCountryCode($url, $bin)
     {
-        $response = $this->callExternalUrl($url, $bin);
+        $remote_service = new RemoteService($url, $bin);
+        $response = $remote_service->httpRequest();
 
         if (!$this->emptyCheck($response['country']['alpha2'])) {
             throw new BinCheckUrlDataFormatException();
